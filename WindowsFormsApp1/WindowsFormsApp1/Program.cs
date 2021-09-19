@@ -19,11 +19,6 @@ namespace WindowsFormsApp1
             Application.Run(new Calc());
         }
     }
-    public class CalcEngine
-    {
-        public int Add(int i, int j)
-        {
-            return i + j;
-        }
-    }
+ 
+
 }
