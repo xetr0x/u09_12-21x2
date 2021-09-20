@@ -17,50 +17,78 @@ namespace WindowsFormsApp1
         public Calc()
         {
             InitializeComponent();
+            CalcEngine calc = new CalcEngine();
+            textBox1.KeyPress += new KeyPressEventHandler(KeyPressControl);
+            button1.Text = "+";
+            button2.Text = "-";
+            button3.Text = "/";
+            button4.Text = "*";
+            button1.Click += new EventHandler(CalculationHandler);
+            button2.Click += new EventHandler(CalculationHandler);
+            button3.Click += new EventHandler(CalculationHandler);
+            button4.Click += new EventHandler(CalculationHandler);
         }
 
-        private void button4_Click(object sender, EventArgs e)
+
+        private void KeyPressControl(object sender, KeyPressEventArgs e)
         {
-            int i = int.Parse(textBox1.Text);
-            int j = int.Parse(textBox2.Text);
-            CalcEngine enging = new CalcEngine();
+            if (e.KeyChar < '0' || e.KeyChar > '9')
+            {
+                //Not a number
+                //hmm we need to handle Backspace
 
-            int answer = enging.Multiply(i, j);
-
-            listBox1.Items.Add($"{i} * {j} = {answer}");
+                //Handled avbryter flödet till textboxen,
+                //genom att lura den att det redan är hanterat
+                if (((short)e.KeyChar) != 8)
+                {
+                    e.Handled = true;
+                }
+            }
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void CalculationHandler(object sender, EventArgs e)
         {
+            Button btn = sender as Button;
+            string operation = btn.Text;
             int i = int.Parse(textBox1.Text);
             int j = int.Parse(textBox2.Text);
-            CalcEngine enging = new CalcEngine();
+            int answer = 0;
 
-            int answer = enging.Divine(i, j);
+            try
+            {
+                switch (operation)
+                {
+                    case "/":
+                        answer = CalcEngine.Divide(i, j);
+                        break;
 
-            listBox1.Items.Add($"{i} / {j} = {answer}");
+                    case "+":
+                        answer = CalcEngine.Add(i, j);
+                        break;
+
+                    default:
+                        break;
+                }
+
+                PresentResult(i, j, answer, operation);
+            }
+            catch (DivideByZeroException)
+            {
+                MessageBox.Show("Oops, 0 är inte tillåtet");
+                textBox2.Focus();
+            }
+            catch (Exception anka)
+            {
+                MessageBox.Show("Annat fel: " + anka.Message);
+            }
         }
-
-        private void button2_Click(object sender, EventArgs e)
+            private static void PresentResult(int i, int j, int answer, string operation)
         {
-            int i = int.Parse(textBox1.Text);
-            int j = int.Parse(textBox2.Text);
-            CalcEngine enging = new CalcEngine();
-
-            int answer = enging.Substract(i, j);
-
-            listBox1.Items.Add($"{i} - {j} = {answer}");
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            int i = int.Parse(textBox1.Text);
-            int j = int.Parse(textBox2.Text);
-            CalcEngine enging = new CalcEngine();
-
-            int answer = enging.Add(i, j);
-
-            listBox1.Items.Add($"{i} + {j} = {answer}");
+            MessageBox.Show($"{i} {operation} {j} = {answer}");
         }
     }
 }
+
+
+    
+
