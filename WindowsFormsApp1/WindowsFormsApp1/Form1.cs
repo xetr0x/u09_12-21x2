@@ -12,13 +12,13 @@ namespace WindowsFormsApp1
 {
     public partial class Calc : Form
     {
-
+        CalcEngine calc = new CalcEngine();
 
         public Calc()
-        {
+        {                                                           
             InitializeComponent();
-            CalcEngine calc = new CalcEngine();
-            textBox1.KeyPress += new KeyPressEventHandler(KeyPressControl);
+            textBox1.KeyPress += new KeyPressEventHandler(KeyPressControl);     
+            textBox2.KeyPress += new KeyPressEventHandler(KeyPressControl);
             button1.Text = "+";
             button2.Text = "-";
             button3.Text = "/";
@@ -46,36 +46,45 @@ namespace WindowsFormsApp1
             }
         }
 
-        private void CalculationHandler(object sender, EventArgs e)
+        private void CalculationHandler(object sender, EventArgs e)         //Den gör själva uträkningarna     
         {
-            Button btn = sender as Button;
-            string operation = btn.Text;
-            int i = int.Parse(textBox1.Text);
+            Button btn = sender as Button;                              //definierar button
+            string operation = btn.Text;                            //buttons text
+            int i = int.Parse(textBox1.Text);                       //convertar text från textbox1 till int och lägger det som en variabel
             int j = int.Parse(textBox2.Text);
-            int answer = 0;
+            int answer = 0;                                         //inicierar answer
 
             try
             {
                 switch (operation)
                 {
                     case "/":
-                        answer = CalcEngine.Divide(i, j);
+                        answer = calc.Divide(i, j);             //ansvarar för divison
                         break;
 
                     case "+":
-                        answer = CalcEngine.Add(i, j);
+                        answer =  calc.Add(i, j);               //ansvarar för addition
                         break;
+
+                    case "-":
+                        answer = calc.Subtract(i, j);           //ansvarar för substration
+                        break;
+
+                    case "*":
+                        answer = calc.Multiply(i, j);           //ansvarar för multiplikation
+                        break;
+
 
                     default:
                         break;
                 }
 
-                PresentResult(i, j, answer, operation);
+                PresentResult(i, j, answer, operation);         //visar resultat
             }
             catch (DivideByZeroException)
             {
-                MessageBox.Show("Oops, 0 är inte tillåtet");
-                textBox2.Focus();
+                MessageBox.Show("Oops, 0 är inte tillåtet");        //visar upp en ruta om talet divideras med noll
+                textBox2.Focus();                                   //Lägger som focus till detta bara boxen nummer 2
             }
             catch (Exception anka)
             {
